@@ -1,0 +1,65 @@
+models:
+  Department:
+    name: string:100 index
+    code: string:20 unique
+    description: text nullable
+    is_active: boolean default:true
+    softdeletes
+    timestamps
+
+  Position:
+    name: string:100 index
+    code: string:20 unique
+    description: text nullable
+    department_id: id foreign:departments
+    is_active: boolean default:true
+    softdeletes
+    timestamps
+
+  AccessLevel:
+    name: string:50 unique
+    code: string:20 unique
+    description: text nullable
+    priority: integer default:0
+    timestamps
+
+  AccessGroup:
+    name: string:100 index
+    code: string:50 unique
+    description: text nullable
+    is_active: boolean default:true
+    timestamps
+
+  Employee:
+    id: uuid primary
+    employee_number: string:20 unique index
+    first_name: string:100 index
+    last_name: string:100 index
+    email: string:255 unique index
+    phone_number: string:20 nullable
+    department_id: id foreign:departments
+    position_id: id foreign:positions
+    manager_id: uuid nullable
+    status: enum:active,inactive,on_leave,terminated,suspended default:active index
+    hire_date: date
+    termination_date: date nullable
+    access_level_id: id foreign:access_levels
+    badge_id: string:50 unique nullable
+    created_by: string:100
+    updated_by: string:100
+    softdeletes
+    timestamps
+
+  EmployeeAccessGroup:
+    employee_id: uuid foreign:employees
+    access_group_id: id foreign:access_groups
+    granted_at: timestamp useCurrent
+    granted_by: string:100
+    expires_at: timestamp nullable
+    timestamps
+
+controllers:
+  Employee:
+    resource: api
+
+seeders: Department, Position, AccessLevel, AccessGroup, Employee, EmployeeAccessGroup
