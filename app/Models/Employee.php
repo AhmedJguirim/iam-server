@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Employee extends Model
@@ -48,6 +49,7 @@ class Employee extends Model
             'hire_date' => 'date',
             'termination_date' => 'date',
             'access_level_id' => 'integer',
+            'status' => \App\Enums\EmployeeStatus::class,
         ];
     }
 
@@ -69,5 +71,12 @@ class Employee extends Model
     public function accessLevel(): BelongsTo
     {
         return $this->belongsTo(AccessLevel::class);
+    }
+
+    public function access_groups(): BelongsToMany
+    {
+        return $this->belongsToMany(AccessGroup::class, 'employee_access_groups')
+            ->withPivot(['granted_at', 'granted_by', 'expires_at'])
+            ->withTimestamps();
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\data\EmployeeData;
+use App\Http\data\EmployeeListData;
 use App\Http\Requests\EmployeeStoreRequest;
 use App\Http\Requests\EmployeeUpdateRequest;
 use App\Http\Resources\EmployeeCollection;
@@ -14,11 +16,11 @@ use Illuminate\Http\Response;
 
 class EmployeeController extends Controller
 {
-    public function index(Request $request): AnonymousResourceCollection
+    public function index(Request $request)
     {
-        $employees = Employee::with('department', 'position', 'manager', 'accessLevel')->get();
+        $employees = Employee::with('department', 'position', 'accessLevel')->get();
 
-        return EmployeesListResource::collection($employees);
+        return EmployeeListData::collect($employees);
     }
 
     public function store(EmployeeStoreRequest $request): EmployeeResource
